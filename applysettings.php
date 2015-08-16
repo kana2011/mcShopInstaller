@@ -204,3 +204,82 @@ return [
 ];";
 
 file_put_contents("mcShop/config/mcshop.php", $mcshop);
+
+$uid = '<script src="https://www.tmtopup.com/topup/3rdTopup.php?uid=' . $_POST['uid'] . '"></script>
+<script>
+    function getPid() {
+        var pid = searchpid(submit_tmnc.toString(), "input_pid.value = \"");
+        if(pid == false) {
+            var pid2 = searchpid(submit_payment.toString(), "\"pid\" : \"");
+            if(pid2 == false) {
+                return false;
+            } else {
+                return pid2;
+            }
+        } else {
+            return pid;
+        }
+    }
+
+    function searchpid(d, s) {
+        var pos = d.indexOf(s);
+        if(pos == -1) {
+            return false;
+        }
+        var pid = d.substring(pos + s.length, pos + s.length + 25);
+        return trimPid(pid, 25);
+    }
+
+    function trimPid(pid, l) {
+        if(!isInt(pid.substring(l - 1, l))) {
+            return trimPid(pid.substring(0, l - 1), l - 1);
+        } else {
+            return pid;
+        }
+    }
+
+    function isInt(value) {
+        return !isNaN(value) &&
+            parseInt(Number(value)) == value &&
+            !isNaN(parseInt(value, 10));
+    }
+</script>';
+
+file_put_contents("mcShop/public/assets/core/components/topup-tmtopup/tmt-custom3rd.html", $uid);
+
+$passkey = '<?php
+
+return [
+
+    "passkey" => "PASSKEY_HERE",
+
+    "amounts" => [
+            "TMT50" => 50,
+            "TMT90" => 90,
+            "TMT150" => 150,
+            "TMT300" => 300,
+            "TMT500" => 500,
+            "TMT1000" => 1000
+        ]
+
+];';
+
+file_put_contents("mcShop/app/Plugins/Plugins/TMTopup/config/config.php", $passkey);
+
+$db = new PDO('mysql:host=' . $_POST['host'] . ';dbname=' . $_POST['name'] . ';charset=utf8', $_POST['user'], $_POST['pass']);
+$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+$templine = '';
+$lines = file("mcShop/tests/mcshop.sql");
+foreach ($lines as $line)
+{
+    if (substr($line, 0, 2) == '--' || $line == '')
+        continue;
+
+    $templine .= $line;
+    if (substr(trim($line), -1, 1) == ';')
+    {
+        $db->query($templine);
+        $templine = '';
+    }
+}

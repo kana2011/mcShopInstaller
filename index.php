@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <style>
             body {
-                background-color: #03A9F4;
+                background-color: #00bcd4;
             }
             .center .parent {
                 position: relative;
@@ -101,8 +101,8 @@
                         </div>
                     </div>
                     <div class="mdl-card__actions mdl-card--border">
-                        <a onclick="downloadFiles()" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                            Install
+                        <a onclick="nextstep()" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                            Next
                         </a>
                     </div>
                 </div>
@@ -110,7 +110,29 @@
             <div id="step3" class="center child" style="display: none;">
                 <div class="mdl-card mdl-shadow--2dp card-wide">
                     <div class="mdl-card__title">
-                        <h2 class="mdl-card__title-text">Step 3 - Installation</h2>
+                        <h2 class="mdl-card__title-text">Step 3 - TMTopup settings</h2>
+                    </div>
+                    <div class="mdl-card__supporting-text">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label inputfield">
+                            <input class="mdl-textfield__input" type="text" id="uid" value="12345" />
+                            <label class="mdl-textfield__label" for="appname">TMTopup UID</label>
+                        </div>
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label inputfield">
+                            <input class="mdl-textfield__input" type="text" id="passkey" value="PASSKEY_HERE" />
+                            <label class="mdl-textfield__label" for="appname">TMTopup Passkey</label>
+                        </div>
+                    </div>
+                    <div class="mdl-card__actions mdl-card--border">
+                        <a onclick="downloadFiles()" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                            Install
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div id="step4" class="center child" style="display: none;">
+                <div class="mdl-card mdl-shadow--2dp card-wide">
+                    <div class="mdl-card__title">
+                        <h2 class="mdl-card__title-text">Step 4 - Installation</h2>
                     </div>
                     <div class="mdl-progress mdl-js-progress mdl-progress__indeterminate progress-demo" style="width: 100%;"></div>
                     <div id="statustext" class="mdl-card__supporting-text">
@@ -118,20 +140,20 @@
                     </div>
                 </div>
             </div>
-            <div id="step4" class="center child" style="display: none;">
+            <div id="step5" class="center child" style="display: none;">
                 <div class="mdl-card mdl-shadow--2dp card-wide">
                     <div class="mdl-card__title">
-                        <h2 class="mdl-card__title-text">Step 4 - Post Installation</h2>
+                        <h2 class="mdl-card__title-text">Installation complete</h2>
                     </div>
                     <div class="mdl-card__supporting-text">
                         <p>
-                            Since this project is still unfinished, you must do these changes by yourself.
+                            Click finish to start using mcShop.
                         </p>
-                        <ul>
-                            <li>Import the database from tests/mcshop.sql</li>
-                            <li>Change your TMTopup UID in public/assets/core/components/topup-tmtopup/tmt-custom3rd.html</li>
-                            <li>Change your TMTopup passkey in app/Plugins/Plugins/TMTopup/config/config.php</li>
-                        </ul>
+                    </div>
+                    <div class="mdl-card__actions mdl-card--border">
+                        <a onclick="reloadPage()" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                            Finish
+                        </a>
                     </div>
                 </div>
             </div>
@@ -145,6 +167,8 @@
         var pass;
         var name;
         var appname;
+        var uid;
+        var passkey;
 
         function nextstep() {
             $('#step'+currentstep).fadeOut(300);
@@ -189,6 +213,8 @@
 
         function downloadFiles() {
             appname = $('#appname').val();
+            uid = $('#uid').val();
+            passkey = $('#passkey').val();
             nextstep();
             $.post("downloadfiles.php", {},
                 function(result){
@@ -207,7 +233,9 @@
                 user: user,
                 pass: pass,
                 name: name,
-                appname: appname
+                appname: appname,
+                uid: uid,
+                passkey: passkey
             },
                 function(result){
                     clean();
@@ -215,11 +243,15 @@
         }
 
         function clean() {
-            $('#statustext').html("Cleaning up...");
+            $('#statustext').html("Finishing installation...");
             $.post("clean.php", {},
                 function(result){
                     nextstep();
                 });
+        }
+
+        function reloadPage() {
+            location.reload();
         }
     </script>
 </html>
