@@ -12,6 +12,7 @@ unlink("mcShop.zip");
 
 rcopy("mcShop/public" , getcwd());
 rrmdir("mcShop/public/");
+rrmdir("mcShop/tests/");
 
 unlink("clean.php");
 
