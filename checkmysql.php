@@ -4,6 +4,10 @@ error_reporting(0);
 
 register_shutdown_function( "fatal_handler" );
 
+if(!get_magic_quotes_gpc()) {
+    $_POST = array_map("addslashes", $_POST);
+}
+
 function fatal_handler() {
     echo failed;
 }

@@ -3,6 +3,10 @@
 set_time_limit(0);
 ini_set('memory_limit', '-1');
 
+if(!get_magic_quotes_gpc()) {
+    $_POST = array_map("addslashes", $_POST);
+}
+
 $index = '<?php
 /**
  * Laravel - A PHP Framework For Web Artisans
