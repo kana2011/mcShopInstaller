@@ -24,7 +24,7 @@ if ($zip->open('mcShop.zip') === TRUE) {
     unlink("mcShop/package.json");
     echo 'ok';
 } else {
-    echo 'failed';
+    echo 'Failed to extract file. Please check your permission.';
 }
 
 function rrmdir($dir) {
